@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect x="16" y="16" width="480" height="480" rx="108" fill="#101a14"/>
+  <rect x="16" y="16" width="480" height="480" rx="108" fill="none" stroke="#3fbf7a" stroke-opacity="0.35" stroke-width="6"/>
+  <g transform="rotate(-12 256 256)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- barra do T -->
+    <path d="M132 150 H380" stroke="#7fdc6e" stroke-width="52"/>
+    <!-- haste -->
+    <path d="M256 150 V300" stroke="#7fdc6e" stroke-width="52"/>
+    <!-- raizes -->
+    <path d="M256 300 C256 350 200 350 176 392" stroke="#e8b04a" stroke-width="26"/>
+    <path d="M256 300 C256 350 312 350 336 392" stroke="#e8b04a" stroke-width="26"/>
+    <path d="M256 300 V412" stroke="#e8b04a" stroke-width="26"/>
+    <path d="M214 352 C196 356 172 350 150 360" stroke="#e8b04a" stroke-width="16"/>
+    <path d="M298 352 C316 356 340 350 362 360" stroke="#e8b04a" stroke-width="16"/>
+  </g>
+  <circle cx="392" cy="384" r="17" fill="#e8b04a"/>
+</svg>
