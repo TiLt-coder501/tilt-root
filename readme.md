@@ -30,6 +30,8 @@ O que mudou em relação ao Hookshot v2.0.14 (novembro de 2026):
 - **Build no Linux:** `scripts/linux/tilt-root-build.sh` compila o renderizador (`hookshot_vk.so`) a partir do código,
   para a CPU do próprio PC, e depois o jogo. O builder guarda suas configurações em `~/.config/tilt-root` e instala em
   `~/Games/TiltRoot`, separado de uma instalação do Hookshot.
+- **Build do Windows no Linux:** o mesmo script, com `TILT_ROOT_TARGET=windows`, gera a pasta do jogo para Windows
+  (veja [Compilar a versão Windows](#compilar-a-versão-windows)).
 
 <p align="center">
   <img src="docs/tilt-root-menu-graficos.png" alt="Menu: Gráficos" width="300">
@@ -38,6 +40,38 @@ O que mudou em relação ao Hookshot v2.0.14 (novembro de 2026):
 
 Como no original, **este repositório não contém o jogo, chaves nem executáveis**. Tudo o que o build gera vem da sua
 cópia do jogo e fica no seu PC: nunca compartilhe esses arquivos.
+
+### Compilar a versão Windows
+
+Não existe download pronto do TILT.ROOT para Windows, e não pode existir: o `hookshot.exe` é o próprio jogo traduzido,
+feito da sua cópia. Cada pessoa compila a sua, de um destes dois jeitos.
+
+**No Linux, para levar ao Windows** (o caminho testado aqui: Linux Mint, novembro de 2026; a pasta gerada ainda não foi
+executada no Windows):
+
+```sh
+export TILT_ROOT_HOME=~/tilt-root-build     # qualquer pasta fora do repositório
+TILT_ROOT_TARGET=windows scripts/linux/tilt-root-build.sh game ~/seu-jogo.nup ~/Games/TiltRoot-Windows pt-BR
+```
+
+Antes, deixe em `TILT_ROOT_HOME` o que o script não baixa sozinho (ele confere e avisa o que falta):
+
+| Pasta | O que é | De onde |
+|---|---|---|
+| `toolchain/` | Um AppImage do Hookshot extraído (`--appimage-extract`, `squashfs-root` renomeada): clang, Python e as ferramentas prontas | um release do Hookshot v2.0.14 |
+| `cpm/` | Vulkan-Headers, SPIRV-Headers e VulkanMemoryAllocator no layout do CPM | as versões de `scripts/linux/deps.sh` |
+| `mingw/` | llvm-mingw para Linux (`llvm-mingw-<data>-ucrt-ubuntu-22.04-x86_64`), extraído | [mstorsjo/llvm-mingw](https://github.com/mstorsjo/llvm-mingw/releases) |
+| `cpm/ffmpeg/<nome>/` | FFmpeg para Windows, `win64-lgpl-shared`, com `include`, `lib` e `bin` | os autobuilds do [FFmpeg-Builds](https://github.com/BtbN/FFmpeg-Builds/releases) |
+| `sdl-win/` | `SDL2.dll` e `SDL3.dll` | [sdl2-compat](https://github.com/libsdl-org/sdl2-compat/releases) e [SDL](https://github.com/libsdl-org/SDL/releases), `win32-x64` |
+
+Usado aqui: llvm-mingw 20261104, FFmpeg n9.0.2, sdl2-compat 2.32.74 e SDL 3.4.20. Sem o FFmpeg o build para em
+`host/nn_video.c` depois de uns 20 minutos; o build inteiro leva de 25 a 45 minutos e a pasta fica com cerca de 27 GB.
+Copie a pasta inteira para um disco que o Windows leia e abra `hookshot.exe`. Na primeira vez o jogo prepara os shaders,
+o que leva alguns minutos. Os saves ficam em `user\save` dentro da pasta ([docs/saves.md](docs/saves.md)).
+
+**No próprio Windows:** siga *Windows, from the command line* em [Build from source](#build-from-source), mais abaixo.
+Esse caminho precisa do Python, do llvm-mingw e da pasta `tools` que o builder do Hookshot original instala; este
+repositório não traz um builder de Windows pronto, e esse caminho não foi testado com o TILT.ROOT.
 
 O restante deste documento é o readme do Hookshot v2.0.14, mantido em inglês; onde ele diz "Hookshot", vale para o
 TILT.ROOT, e os links de releases e issues apontam para o projeto original.
@@ -473,6 +507,9 @@ the AppImage from them. A folder built from a source checkout has no launcher: `
 Unpack llvm-mingw's Linux build (`ucrt-ubuntu-22.04-x86_64`), then run `make_game.py` with `RX_TARGET=windows` and
 `HOOKSHOT_MINGW` set to its folder. The objects go to `~/.cache/hookshot-builder-windows`, apart from the Linux game's.
 The game folder runs under Proton or on Windows.
+
+`TILT_ROOT_TARGET=windows scripts/linux/tilt-root-build.sh game <game.nup> <out folder>` does this with the tools of an
+extracted AppImage; what it needs is listed at the top of the script.
 
 </details>
 
